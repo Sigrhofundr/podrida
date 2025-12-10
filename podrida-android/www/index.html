@@ -302,24 +302,32 @@
 </head>
 <body>
 
+
+<!-- Global Error Handler -->
+<script>
+    window.onerror = function(msg, url, line) {
+        alert("Errore JS:\n" + msg + "\nRiga: " + line);
+        return false;
+    };
+</script>
+
+<div id="screen-home">
+    <div class="home-overlay">
+        <img src="assets/logo.png" class="home-logo" alt="Logo">
+        <div class="home-title">Podrida</div>
+        
+        <button class="home-btn" onclick="goToSetup()">Gioca</button>
+        <button class="home-btn secondary" onclick="goToStats()">Statistiche</button>
+        <button class="home-btn info" onclick="openInfoModal()">Informazioni</button>
+    </div>
+</div>
+
 <header>
     <h1 id="header-title">Podrida</h1>
     <h2 id="header-subtitle">Setup</h2>
 </header>
 
 <div class="container" id="app-container">
-
-    <!-- Screen: Home -->
-    <div id="screen-home">
-        <div class="home-overlay">
-            <img src="assets/logo.png" class="home-logo" alt="Logo">
-            <div class="home-title">Podrida</div>
-            
-            <button class="home-btn" onclick="goToSetup()">Gioca</button>
-            <button class="home-btn secondary" onclick="goToStats()">Statistiche</button>
-            <button class="home-btn info" onclick="openInfoModal()">Informazioni</button>
-        </div>
-    </div>
 
     <!-- Screen: Stats -->
     <div id="screen-stats" class="card" style="display:none;">
