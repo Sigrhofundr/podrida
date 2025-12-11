@@ -516,70 +516,71 @@ function resetGame(force) {
     }
 }
 
-async function downloadSummary() {
-    const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
-    const sortedPlayers = [...GAME_STATE.players].sort((a,b) => b.totalScore - a.totalScore);
-    const winnerName = sortedPlayers[0].name.replace(/[^a-z0-9]/gi, '_');
-    const filename = `${winnerName}-${dateStr}.html`;
-
-    // Text Summary
-    let textSummary = `🏆 Podrida - ${dateStr}\n${t('winner')}: ${sortedPlayers[0].name} (${sortedPlayers[0].totalScore})\n\n`;
-    sortedPlayers.forEach((p, i) => {
-            textSummary += `${i+1}. ${p.name}: ${p.totalScore}\n`;
-    });
-
-    if (navigator.share) {
+    async function shareData(title, text) {
         try {
-            await navigator.share({
-                title: 'Podrida',
-                text: textSummary,
-            });
-            return;
+            // Check if Capacitor Share is available
+            // In vanilla JS runtime with Capacitor, Plugins is usually available globally if the native bridge is loaded
+            if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Share) {
+                await Capacitor.Plugins.Share.share({
+                    title: title,
+                    text: text,
+                    dialogTitle: 'Condividi Risultati',
+                });
+                return true;
+            } else if (navigator.share) {
+                // Fallback to Web Share API
+                await navigator.share({ title, text });
+                return true;
+            }
         } catch (err) {
-            console.log('Share failed', err);
+            console.error("Share failed:", err);
+            // Ignore user cancellation errors
+            if (err.message && (err.message.indexOf('canceled') > -1 || err.message.indexOf('cancelled') > -1)) return true; 
         }
-    } else {
-        // Fallback Clipboard
-         copyToClipboard(textSummary);
-         return; 
-         // Optional: Use existing HTML file download as last resort?
-         // User seemed to imply simple fallback is fine. Clipboard is best fallback.
+        return false;
     }
-}
 
-function copyToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-        document.execCommand('copy');
-        alert(t('copySuccess'));
-    } catch (err) {
-        alert('Unable to copy');
+    async function downloadSummary() {
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const sortedPlayers = [...GAME_STATE.players].sort((a,b) => b.totalScore - a.totalScore);
+        
+        let textSummary = `🏆 ${t('appFullTitle')} - ${dateStr}\n${t('winner')}: ${sortedPlayers[0].name} (${sortedPlayers[0].totalScore} pt)\n\n${t('ranking')}:\n`;
+        sortedPlayers.forEach((p, i) => {
+             textSummary += `${i+1}. ${p.name}: ${p.totalScore} pt\n`;
+        });
+
+        // Try Share
+        const shared = await shareData(t('appFullTitle'), textSummary);
+        if (!shared) {
+             // Fallback
+             copyToClipboard(textSummary);
+        }
     }
-    document.body.removeChild(textArea);
-}
 
-// Debug Share
-async function testShare() {
-    const text = "TEST CONDIVISIONE PODRIDA\n\nFunziona!";
-    // Reuse logic
-    if (navigator.share) {
+    function copyToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
         try {
-            await navigator.share({
-                title: 'Test Share',
-                text: text
-            });
-            alert(t('shareSuccess'));
+            document.execCommand('copy');
+            alert(t('copySuccess'));
         } catch (err) {
-            alert(t('shareError') + err.message);
+            alert('Unable to copy');
+        }
+        document.body.removeChild(textArea);
+    }
+
+    // Debug Share
+    async function testShare() {
+        const text = "TEST CONDIVISIONE PODRIDA\n\nFunziona!";
+        const shared = await shareData('Test Share', text);
+        if (shared) {
+            // alert(t('shareSuccess')); 
+        } else {
+            alert("Share plugin not available.");
             copyToClipboard(text);
         }
-    } else {
-        alert("Navigator.share not supported.");
-        copyToClipboard(text);
     }
-}
