@@ -54,25 +54,27 @@ function updateDeckUI() {
     let val = 40;
     for(const r of radios) if(r.checked) val = parseInt(r.value);
     
-    document.getElementById('opt-40').className = val === 40 ? 'deck-option selected' : 'deck-option';
-    document.getElementById('opt-52').className = val === 52 ? 'deck-option selected' : 'deck-option';
+    const opt40 = document.getElementById('opt-40');
+    const opt52 = document.getElementById('opt-52');
+    if(opt40) opt40.className = val === 40 ? 'deck-option selected' : 'deck-option';
+    if(opt52) opt52.className = val === 52 ? 'deck-option selected' : 'deck-option';
 
     let suitHtml = '';
     if (val === 40) {
         suitHtml = `
             <div class="suit-40">
-                <span class="suit-item">Ori 🟡</span> <span class="suit-separator">></span>
-                <span class="suit-item">Spade ⚔️</span> <span class="suit-separator">></span>
-                <span class="suit-item">Coppe 🏆</span> <span class="suit-separator">></span>
-                <span class="suit-item">Bastoni 🪵</span>
+                <span class="suit-item">${t('suitOri')}</span> <span class="suit-separator">></span>
+                <span class="suit-item">${t('suitSpade')}</span> <span class="suit-separator">></span>
+                <span class="suit-item">${t('suitCoppe')}</span> <span class="suit-separator">></span>
+                <span class="suit-item">${t('suitBastoni')}</span>
             </div>`;
     } else {
         suitHtml = `
             <div class="suit-52">
-                <span class="suit-item suit-red">Cuori ♥️</span> <span class="suit-separator">></span>
-                <span class="suit-item suit-red">Quadri ♦️</span> <span class="suit-separator">></span>
-                <span class="suit-item suit-black">Fiori ♣️</span> <span class="suit-separator">></span>
-                <span class="suit-item suit-black">Picche ♠️</span>
+                <span class="suit-item suit-red">${t('suitCuori')}</span> <span class="suit-separator">></span>
+                <span class="suit-item suit-red">${t('suitQuadri')}</span> <span class="suit-separator">></span>
+                <span class="suit-item suit-black">${t('suitFiori')}</span> <span class="suit-separator">></span>
+                <span class="suit-item suit-black">${t('suitPicche')}</span>
             </div>`;
     }
     const setupEl = document.getElementById('suit-display-setup');
@@ -93,14 +95,14 @@ function renderSetupInputs() {
 
     for (let i = 0; i < count; i++) {
         const isChecked = i === checkedIdx ? 'checked' : '';
-        // Note: placeholder and value hardcoded for now, simplistic.
+        const pLabel = `${t('playerDef')} ${i+1}`;
         container.innerHTML += `
         <div class="setup-player-row">
             <div class="setup-player-input-wrapper">
-                <input type="text" id="pname-${i}" placeholder="Giocatore ${i+1}" value="Giocatore ${i+1}" style="margin:0;">
+                <input type="text" id="pname-${i}" placeholder="${pLabel}" value="${pLabel}" style="margin:0;">
             </div>
             <label class="setup-dealer-select">
-                Mazziere
+                ${t('dealerLabel')}
                 <input type="radio" name="initial-dealer" value="${i}" ${isChecked}>
             </label>
         </div>
@@ -124,7 +126,7 @@ function startGame() {
 
     const players = [];
     for (let i = 0; i < count; i++) {
-        const name = document.getElementById(`pname-${i}`).value.trim() || `G${i+1}`;
+        const name = document.getElementById(`pname-${i}`).value.trim() || `${t('playerDef')} ${i+1}`;
         players.push({ name: name, totalScore: 0 });
     }
 

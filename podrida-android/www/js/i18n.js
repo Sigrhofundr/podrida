@@ -50,7 +50,16 @@ const TRANSLATIONS = {
         appFullTitle: "Podrida Segnapunti",
         ranking: "Classifica",
         roundGen: "Round", // generic label
-        cardsGen: "Carte"  // generic label
+        cardsGen: "Carte",  // generic label
+        playerDef: "Giocatore",
+        suitOri: "Ori 🟡",
+        suitSpade: "Spade ⚔️",
+        suitCoppe: "Coppe 🏆",
+        suitBastoni: "Bastoni 🪵",
+        suitCuori: "Cuori ♥️",
+        suitQuadri: "Quadri ♦️",
+        suitFiori: "Fiori ♣️",
+        suitPicche: "Picche ♠️"
     },
     en: {
         play: "Play",
@@ -103,7 +112,16 @@ const TRANSLATIONS = {
         appFullTitle: "Podrida Scorekeeper",
         ranking: "Ranking",
         roundGen: "Round",
-        cardsGen: "Cards"
+        cardsGen: "Cards",
+        playerDef: "Player",
+        suitOri: "Coins 🟡",
+        suitSpade: "Swords ⚔️",
+        suitCoppe: "Cups 🏆",
+        suitBastoni: "Clubs 🪵",
+        suitCuori: "Hearts ♥️",
+        suitQuadri: "Diamonds ♦️",
+        suitFiori: "Clubs ♣️",
+        suitPicche: "Spades ♠️"
     },
     es: {
         play: "Jugar",
@@ -156,7 +174,16 @@ const TRANSLATIONS = {
         appFullTitle: "Podrida Anotador",
         ranking: "Clasificación",
         roundGen: "Ronda",
-        cardsGen: "Cartas"
+        cardsGen: "Cartas",
+        playerDef: "Jugador",
+        suitOri: "Oros 🟡",
+        suitSpade: "Espadas ⚔️",
+        suitCoppe: "Copas 🏆",
+        suitBastoni: "Bastos 🪵",
+        suitCuori: "Corazones ♥️",
+        suitQuadri: "Diamantes ♦️",
+        suitFiori: "Tréboles ♣️",
+        suitPicche: "Picas ♠️"
     }
 };
 
@@ -203,6 +230,10 @@ function updateLangUI() {
          window.renderInputs(); 
          if(window.updateScoreboard) window.updateScoreboard(); 
     }
+    
+    // Refresh Setup UI (Suits & Player Placeholders) - resets input values but safe on Home
+    if(window.updateDeckUI) window.updateDeckUI();
+    if(window.renderSetupInputs) window.renderSetupInputs();
 
     // Update Document Title
     document.title = TRANSLATIONS[currentLang]['appFullTitle'] || "Podrida";
