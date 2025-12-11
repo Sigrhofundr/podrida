@@ -52,6 +52,30 @@ Every bit of support helps keep the app updated and ad-free.
 
 ---
 
+# Descripción en Español 🇪🇸
+
+**Podrida Anotador** es una aplicación Android gratuita y de código abierto diseñada para gestionar los puntajes del juego de cartas "Podrida" (una variante del Whist / Oh Hell / Podrida).
+
+¡Olvídate del papel y lápiz! Con esta app, puedes calcular fácilmente los puntajes, gestionar quién reparte y seguir la clasificación en tiempo real.
+
+## 🚀 Funcionalidades Principales
+
+*   **Puntajes Automáticos**: Cálculo automático (10 puntos por apuesta correcta + 3 por cada baza).
+*   **Gestión de Jugadores y Repartidor**: Soporta de 2 a 40 jugadores, con indicadores claros para el repartidor y el turno actual.
+*   **Multi-Idioma**: Interfaz completa en **Italiano**, **Inglés** y **Español**.
+*   **Estadísticas**: Historial local de partidas y tabla de clasificación.
+*   **Compartir**: Comparte los resultados finales directamente en WhatsApp, Telegram u otras apps.
+*   **Configuración Flexible**: Elige entre mazos de 40 o 52 cartas.
+
+## ☕ Apoya el Proyecto
+
+Si te gusta la aplicación y te resulta útil, ¡considera invitarme a un café!  
+Cada aporte ayuda a mantener la app actualizada y sin publicidad.
+
+**[Invítame a un café en Ko-fi](https://ko-fi.com/albertone)**
+
+---
+
 ## 🛠️ Development
 
 This project is built with "Vanilla" HTML/JS and wrapped with **Capacitor** for Android.
