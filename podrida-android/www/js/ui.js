@@ -503,7 +503,7 @@ function showFinalResults() {
     document.getElementById('game-tabs').style.display = 'none'; 
     document.getElementById('winner-section').style.display = 'block';
     document.getElementById('endgame-controls').style.display = 'block';
-    document.getElementById('history-card').style.display = 'none'; 
+    // document.getElementById('history-card').style.display = 'none'; // Element not found, caused error 
     
     // Update Button Texts
     const btns = document.querySelectorAll('#endgame-controls button');
