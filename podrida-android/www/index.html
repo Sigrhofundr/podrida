@@ -3,1170 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Segnapunti Podrida</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --accent: #e74c3c;
-            --success: #27ae60;
-            --bg: #f4f4f9;
-            --card-bg: #ffffff;
-            --text: #333;
-        }
-
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            /* Ensure full height for home screen */
-            min-height: 100vh;
-        }
-
-        /* Safe Area Fix */
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px;
-            padding-top: max(15px, env(safe-area-inset-top)); 
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        /* Home Screen */
-        #screen-home {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('assets/large.png') no-repeat center center;
-            background-size: cover;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 200; /* Above everything */
-        }
-        .home-overlay {
-            background: rgba(0,0,0,0.7); 
-            padding: 40px 30px; 
-            border-radius: 20px; 
-            width: 85%; 
-            max-width: 350px;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; gap: 15px;
-        }
-        .home-logo { 
-            width: 100px; height: 100px; 
-            border-radius: 20px; margin: 0 auto 20px auto; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-            display: block;
-        }
-        .home-title { 
-            font-size: 2.5rem; margin: 0 0 30px 0; 
-            font-weight: 800; color: white; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
-            letter-spacing: 1px;
-            font-family: 'Georgia', serif; /* More classic card game feel */
-        }
-        .home-btn { 
-            background: linear-gradient(to bottom, #27ae60, #219150);
-            color: white; padding: 15px; font-size: 1.2rem; 
-            border: none; border-radius: 50px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .home-btn:active { transform: scale(0.98); }
-        .home-btn.secondary { 
-            background: rgba(255,255,255,0.15); 
-            border: 1px solid rgba(255,255,255,0.3);
-            font-size: 1rem;
-            margin-top: 5px;
-        }
-        .home-btn.info {
-            background: transparent; color: rgba(255,255,255,0.7);
-            border: none; box-shadow: none; font-size: 0.9rem; margin-top: 10px;
-            text-transform: none; text-decoration: underline;
-        }
-
-        /* Stats List */
-        .stat-item {
-            background: white; padding: 12px; border-radius: 8px; margin-bottom: 8px;
-            border-left: 4px solid var(--primary);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .stat-date { font-size: 0.8rem; color: #888; }
-        .stat-winner { font-weight: bold; color: var(--primary); }
-        .stat-score { font-weight: bold; color: var(--success); }
-
-        h1 { margin: 0; font-size: 1.2rem; }
-        h2 { margin: 0; font-size: 1rem; font-weight: normal; opacity: 0.9; }
-
-        .container {
-            padding: 15px;
-            max-width: 600px;
-            margin: 0 auto;
-            padding-bottom: 80px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        /* Inputs & Forms */
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            margin-bottom: 5px; 
-        }
-
-        .setup-player-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
-            padding: 5px;
-            border-radius: 8px;
-        }
-        .setup-player-input-wrapper { flex: 1; }
-        .setup-dealer-select { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            font-size: 0.7rem; 
-            color: #666;
-            min-width: 50px;
-        }
-        .setup-dealer-select input[type="radio"] {
-            margin: 5px 0 0 0;
-            transform: scale(1.5);
-        }
-
-        /* Deck Selector */
-        .deck-options {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            justify-content: center;
-        }
-        .deck-option {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: bold;
-            background: #eee;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        .deck-option input { margin: 0; transform: scale(1.2); }
-        .deck-option.selected { background: #d6eaf8; border: 1px solid #3498db; }
-
-        /* Suit Bar */
-        .suit-bar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            background: #fff3e0;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            flex-wrap: wrap;
-            border: 1px solid #ffe0b2;
-        }
-        .suit-item { display: flex; align-items: center; font-weight: bold; }
-        .suit-separator { color: #aaa; font-size: 0.8rem; }
-        .suit-40 .suit-item { color: #d35400; }
-        .suit-52 .suit-red { color: #e74c3c; }
-        .suit-52 .suit-black { color: #2c3e50; }
-
-        /* Buttons */
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
-        button:active { opacity: 0.8; }
-        button.secondary { background-color: #95a5a6; margin-top: 10px; }
-        button.danger { background-color: var(--accent); margin-top: 10px; }
-        button.small { width: auto; padding: 5px 10px; font-size: 14px; }
-        
-        /* Footer Reset Button */
-        .footer-reset {
-            text-align: center;
-            margin-top: 30px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        .btn-reset-small {
-            background: transparent;
-            color: #999;
-            border: 1px solid #ddd;
-            font-size: 0.8rem;
-            padding: 8px 15px;
-            width: auto;
-            font-weight: normal;
-        }
-        .btn-reset-small:hover { color: var(--accent); border-color: var(--accent); }
-
-        /* Game Controls */
-        .player-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .player-name { font-weight: 600; flex: 1; }
-        .dealer-badge { 
-            background: var(--accent); color: white; 
-            font-size: 0.7rem; padding: 2px 6px; 
-            border-radius: 4px; margin-left: 5px; 
-            vertical-align: middle;
-        }
-        .control-group { display: flex; align-items: center; gap: 10px; }
-        .control-btn {
-            width: 35px; height: 35px; border-radius: 50%;
-            font-size: 1.2rem; padding: 0; display: flex;
-            align-items: center; justify-content: center;
-        }
-        .control-val { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; }
-
-        .info-box {
-            background-color: #e8f4fd;
-            border-left: 4px solid #3498db;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-        }
-        .info-box.warn {
-            background-color: #fdedec;
-            border-left-color: var(--accent);
-        }
-
-        /* Table */
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th, td { padding: 8px; text-align: center; border-bottom: 1px solid #eee; }
-        th { background-color: #f8f9fa; position: sticky; top: 0; }
-        tr.current-leader { background-color: #f0f9eb; }
-
-        /* Tabs */
-        .tabs { display: flex; margin-bottom: 15px; border-bottom: 2px solid #eee; }
-        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; color: #aaa; }
-        .tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); font-weight: bold; margin-bottom: -2px; }
-
-        /* Modal */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; width: 90%; max-width: 400px; max-height: 90vh;
-            overflow-y: auto; border-radius: 12px; padding: 20px;
-        }
-
-        /* Winner Screen */
-        .winner-box {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(to bottom right, #fff, #f0f9eb);
-            border: 2px solid var(--success);
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        .winner-trophy { font-size: 3rem; margin-bottom: 10px; }
-        .winner-name { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-        .winner-score { font-size: 1.2rem; color: var(--success); font-weight: bold; }
-    </style>
+    <title>Podrida Segnapunti</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-
-<!-- Global Error Handler -->
-<script>
-    window.onerror = function(msg, url, line) {
-        alert("Errore JS:\n" + msg + "\nRiga: " + line);
-        return false;
-    };
-</script>
-
+<!-- HOME SCREEN -->
 <div id="screen-home">
-    <div class="home-overlay">
-        <img src="assets/logo.png" class="home-logo" alt="Logo">
-        <div class="home-title">Podrida</div>
-        
-        <button class="home-btn" onclick="goToSetup()">Gioca</button>
-        <button class="home-btn secondary" onclick="goToStats()">Statistiche</button>
-        <button class="home-btn info" onclick="openInfoModal()">Informazioni</button>
-    </div>
+    <div id="lang-btn" onclick="toggleLanguage()">🇮🇹</div>
+    <img src="assets/large.png" id="home-logo" alt="Podrida Logo">
+    <h1 style="margin-bottom: 5px;">Podrida</h1>
+    <p style="margin-top:0; opacity:0.8; margin-bottom: 30px;" data-i18n="scorekeeper">Segnapunti</p>
+
+    <div class="home-btn primary" onclick="goToSetup()" data-i18n="play">Gioca</div>
+    <div class="home-btn" onclick="goToStats()" data-i18n="stats">Statistiche</div>
+    <div class="home-btn" onclick="openInfoModal()" data-i18n="info">Informazioni</div>
+    
+    <!-- TEMPORARY DEBUG BUTTON -->
+    <div class="home-btn" style="background: rgba(255,0,0,0.3); font-size: 0.9rem; padding: 10px;" onclick="testShare()">⚠️ Test Share</div>
+    
+    <div style="margin-top: 30px; font-size: 0.8rem; opacity: 0.6;">v1.0.0</div>
 </div>
 
 <header>
-    <h1 id="header-title">Podrida</h1>
-    <h2 id="header-subtitle">Setup</h2>
+    <div style="display:flex; align-items:center; justify-content:center; position:relative;">
+        <div style="position:absolute; left:0; font-size:1.5rem; cursor:pointer;" onclick="showHome()">🏠</div>
+        <div>
+            <h1 id="header-title">Podrida</h1>
+            <p id="header-subtitle">Setup</p>
+        </div>
+    </div>
 </header>
 
-<div class="container" id="app-container">
+<div id="app-container">
+    
+    <!-- SETUP SCREEN -->
+    <div id="screen-setup" class="container">
+        <div class="card">
+            <h2 data-i18n="setup">Nuova Partita</h2>
 
-    <!-- Screen: Stats -->
-    <div id="screen-stats" class="card" style="display:none;">
-        <h3>Statistiche Partite</h3>
-        <p style="color:#666; font-size:0.9rem;">Storico delle partite concluse salvato sul dispositivo.</p>
-        
-        <div id="stats-list" class="stats-list">
-            <!-- List will be populated here -->
-        </div>
+            <label data-i18n="deck">Seleziona Mazzo:</label>
+            <div class="deck-selector">
+                <label id="opt-40" class="deck-option selected" onclick="updateDeckUI()">
+                    <input type="radio" name="deckSize" value="40" checked>
+                    40
+                </label>
+                <label id="opt-52" class="deck-option" onclick="updateDeckUI()">
+                    <input type="radio" name="deckSize" value="52">
+                    52
+                </label>
+            </div>
+            <div id="suit-display-setup"></div>
 
-        <button class="secondary" onclick="showHome()">Torna Indietro</button>
-        <button class="danger small" style="margin-top:20px; background: transparent; color: #c0392b; border: 1px solid #c0392b;" onclick="clearStats()">Cancella Storico</button>
-    </div>
+            <div style="margin-top: 20px;">
+                <label data-i18n="players">Numero Giocatori (2-40)</label>
+                <div class="player-count-control">
+                    <button class="count-btn" onclick="adjustPlayerCount(-1)">-</button>
+                    <span id="setup-count">5</span>
+                    <button class="count-btn" onclick="adjustPlayerCount(1)">+</button>
+                </div>
+            </div>
 
-    <!-- Screen 1: Setup -->
-    <div id="screen-setup" class="card" style="display:none;">
-        <h3>Nuova Partita</h3>
-        
-        <div style="margin-bottom: 10px; font-weight: bold; color: #555;">Seleziona Mazzo:</div>
-        <div class="deck-options">
-            <label class="deck-option selected" id="opt-40">
-                <input type="radio" name="deckSize" value="40" checked onchange="updateDeckUI()"> 40 Carte
-            </label>
-            <label class="deck-option" id="opt-52">
-                <input type="radio" name="deckSize" value="52" onchange="updateDeckUI()"> 52 Carte
-            </label>
-        </div>
-
-        <!-- Dynamic Suit Bar -->
-        <div id="suit-display-setup" class="suit-bar"></div>
-        
-        <label>Numero Giocatori (2-40)</label>
-        <div class="control-group" style="margin-bottom: 15px; justify-content: center;">
-            <button class="control-btn" onclick="adjustPlayerCount(-1)">-</button>
-            <span class="control-val" id="setup-count">5</span>
-            <button class="control-btn" onclick="adjustPlayerCount(1)">+</button>
-        </div>
-
-        <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">Seleziona il primo mazziere:</div>
-        <div id="player-inputs"></div>
-        
-        <button onclick="startGame()">Inizia Partita</button>
-        <button class="secondary" id="resume-btn" onclick="checkForSave()">Riprendi ultima partita</button>
-    </div>
-
-    <!-- Screen 2: Game Loop -->
-    <div id="screen-game" style="display:none;">
-        
-        <div class="tabs" id="game-tabs">
-            <div class="tab active" onclick="switchTab('play')">Gioca</div>
-            <div class="tab" onclick="switchTab('score')">Classifica</div>
-        </div>
-
-        <!-- Tab: Play -->
-        <div id="tab-play">
-            <!-- Suit Reminder in Game -->
-            <div id="suit-display-game" class="suit-bar" style="padding: 5px; font-size: 0.9rem; margin-bottom:10px;"></div>
-
-            <div class="card">
-                <div class="info-box" id="round-rules"></div>
-
-                <div id="game-inputs"></div>
-
-                <div class="info-box warn" id="validation-msg" style="display:none;"></div>
-
-                <button id="action-btn" onclick="submitPhase()">Conferma Chiamate</button>
-                <button class="secondary small" onclick="undoPhase()" style="margin-top: 20px;">Indietro (Annulla Fase)</button>
+            <label style="margin-top: 20px;" data-i18n="dealer">Seleziona il primo mazziere:</label>
+            <div id="player-inputs">
+                <!-- Generated by JS -->
             </div>
         </div>
 
-        <!-- Tab: Scoreboard -->
+        <button onclick="startGame()" style="font-size: 1.2rem; padding: 15px;" data-i18n="start">Inizia Partita</button>
+        
+        <div style="text-align:center; margin-top:20px;">
+            <button id="resume-btn" class="secondary" style="display:none;" data-i18n="resume">Riprendi ultima partita</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="screen-game" class="container" style="display:none;">
+        
+        <div class="tabs" id="game-tabs">
+            <div class="tab active" onclick="switchTab('play')" data-i18n="play">Gioca</div>
+            <div class="tab" onclick="switchTab('score')" data-i18n="ranking">Classifica</div>
+        </div>
+
+        <!-- TAB PLAY -->
+        <div id="tab-play">
+            <div class="card">
+                <div id="round-rules" class="round-info"></div>
+                <div id="suit-display-game" style="margin-bottom: 10px;"></div>
+                
+                <div id="game-inputs">
+                    <!-- Dynamic Inputs -->
+                </div>
+                
+                <div id="validation-msg"></div>
+                
+                <button id="action-btn" onclick="submitPhase()">Conferma</button>
+                <button class="secondary" onclick="undoPhase()" style="margin-top:10px;" data-i18n="undo">Indietro (Annulla Fase)</button>
+            </div>
+        </div>
+
+        <!-- TAB SCORE -->
         <div id="tab-score" style="display:none;">
             
-            <!-- Winner Section (Hidden during game) -->
-            <div id="winner-section" style="display:none;"></div>
+            <div id="winner-section" style="display:none;">
+                <!-- Winner content inserted by JS -->
+            </div>
 
             <div class="card">
-                <h3>Classifica Generale</h3>
-                <table id="scoreboard-table">
+                <table>
                     <thead>
                         <tr>
-                            <th>Pos</th>
+                            <th>#</th>
                             <th>Nome</th>
                             <th>Punti</th>
                         </tr>
                     </thead>
-                    <tbody id="scoreboard-body"></tbody>
+                    <tbody id="scoreboard-body">
+                        <!-- Scoreboard Rows -->
+                    </tbody>
                 </table>
             </div>
             
-            <!-- End Game Buttons -->
-            <div id="endgame-controls" style="display:none;">
-                <button style="background-color: #2980b9; margin-bottom: 10px;" onclick="downloadSummary()">📤 Condividi Risultati</button>
-                <button class="danger" style="padding: 15px; font-size: 1.1rem;" onclick="resetGame(true)">Nuova Partita</button>
+            <div id="endgame-controls" style="display:none; margin-bottom: 20px;">
+                <button onclick="downloadSummary()" class="secondary" style="background:#2ecc71;" data-i18n="share">📤 Condividi Risultati</button>
+                <button onclick="resetGame(true)" class="danger" style="margin-top:10px;" data-i18n="newGame">Nuova Partita</button>
             </div>
 
-            <div class="card" id="history-card">
-                <h3>Storico Round (Modificabile)</h3>
-                <p style="font-size: 0.8rem; color: #666;">Clicca su un round per modificare.</p>
-                <div id="history-list"></div>
+            <h3 style="margin-left: 5px; color:#666;" data-i18n="history">Storico Round (Modificabile)</h3>
+            <div id="history-list">
+                <!-- History Cards -->
             </div>
         </div>
-    </div>
-
-    <!-- Footer Reset (Always Visible) -->
-    <div class="footer-reset">
-        <button class="btn-reset-small" onclick="resetGame(false)">Riavvia / Azzera Dati</button>
-    </div>
-</div>
-
-<!-- Modal: Info -->
-<div id="info-modal" class="modal">
-    <div class="modal-content" style="text-align:center;">
-        <h3>Informazioni</h3>
-        <img src="assets/logo.png" style="width:60px; height:60px; border-radius:12px; margin-bottom:10px;">
-        <p><strong>Segnapunti Podrida</strong></p>
-        <p style="font-size:0.9rem;">App sviluppata per gestire facilmente i punteggi delle tue partite.</p>
-        <p style="font-size:0.8rem; color:#666;">Versione 1.0.0</p>
         
-        <div style="background:#f0f9eb; padding:10px; border-radius:8px; margin: 15px 0;">
-            <p style="font-size:0.85rem; margin:0;">Ti piace l'app?</p>
-            <!-- Placeholder for user offer/link -->
-            <a href="#" style="color:var(--success); font-weight:bold; text-decoration:none;">Offrimi un caffè ☕</a>
+        <div style="margin-top: 30px;">
+            <button class="secondary" onclick="resetGame(false)" data-i18n="reset">Riavvia / Azzera Dati</button>
+        </div>
+    </div>
+
+    <!-- STATS SCREEN -->
+    <div id="screen-stats" class="container" style="display:none;">
+        <div class="card">
+            <h2 data-i18n="statsTitle">Statistiche Partite</h2>
+            <p style="font-size:0.9rem; color:#666; margin-bottom:20px;" data-i18n="statsSub">Storico delle partite concluse salvato sul dispositivo.</p>
+            
+            <div id="stats-list">
+                <!-- Stats items populated by JS -->
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button onclick="showHome()" class="secondary" data-i18n="back">Torna Indietro</button>
+                <button onclick="clearStats()" class="danger" style="margin-top:10px;" data-i18n="clear">Cancella Storico</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- INFO MODAL -->
+<div id="info-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="info-header">
+            <img src="assets/logo.png" class="info-logo" alt="Logo">
+            <h3 data-i18n="appFullTitle">Podrida Segnapunti</h3>
+            <div class="info-version" data-i18n="version">Versione 1.0.0</div>
+        </div>
+        <p data-i18n="devBy">App sviluppata per gestire facilmente i punteggi delle tue partite.</p>
+        
+        <div class="info-links">
+            <div style="text-align:center;">
+                <p data-i18n="like">Ti piace l'app?</p>
+                <!-- Ko-fi Link -->
+                <a href="https://ko-fi.com/albertone" target="_blank" class="info-btn" style="display:block; background:#f1c40f; font-weight:bold; color:#fff; border:none;" data-i18n="coffee">Offrimi un caffè ☕</a>
+            </div>
         </div>
 
-        <button onclick="closeInfoModal()">Chiudi</button>
+        <button onclick="closeInfoModal()" style="margin-top: 20px;" data-i18n="close">Chiudi</button>
     </div>
 </div>
 
-<!-- Modal for Editing History -->
-<div id="edit-modal" class="modal">
+<!-- EDIT ROUND MODAL -->
+<div id="edit-modal" class="modal-overlay">
     <div class="modal-content">
-        <h3>Modifica Round <span id="edit-round-num"></span></h3>
-        <p style="font-size:0.8rem; color:red;">Attenzione: modificare il passato ricalcolerà tutto.</p>
+        <h3><span data-i18n="edit">Modifica</span> <span data-i18n="round">Round</span> <span id="edit-round-num"></span></h3>
         
         <div class="tabs">
-            <div class="tab active" id="edit-tab-bids" onclick="switchEditTab('bids')">Chiamate</div>
-            <div class="tab" id="edit-tab-takes" onclick="switchEditTab('takes')">Prese</div>
+            <div id="edit-tab-bids" class="tab active" onclick="switchEditTab('bids')" data-i18n="bidding">Chiamate</div>
+            <div id="edit-tab-takes" class="tab" onclick="switchEditTab('takes')" data-i18n="taking">Prese</div>
         </div>
 
-        <div id="edit-inputs"></div>
-        <div class="info-box warn" id="edit-validation-msg" style="display:none;"></div>
+        <div id="edit-inputs">
+            <!-- Dynamic inputs for editing -->
+        </div>
+
+        <div id="edit-validation-msg" style="color:red; display:none; margin-bottom:10px; font-weight:bold;"></div>
 
         <div style="margin-top: 15px; display: flex; gap: 10px;">
-            <button onclick="saveEdit()">Salva</button>
-            <button class="secondary" onclick="closeEditModal()">Annulla</button>
+            <button onclick="saveEdit()" data-i18n="save">Salva</button> <!-- Need to add Save translation -->
+            <button class="secondary" onclick="closeEditModal()" data-i18n="cancel">Annulla</button> <!-- Need to add Cancel translation -->
         </div>
     </div>
 </div>
 
-<script>
-    // --- STATE MANAGEMENT ---
-    const GAME_STATE = {
-        players: [], 
-        rounds: [], 
-        history: [], 
-        currentRoundIdx: 0,
-        phase: 'bidding',
-        dealerOffset: 0,
-        deckSize: 40
-    };
+<script src="js/i18n.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
 
-    const CONFIG = {
-        pointsCorrect: 10,
-        pointsPerTrick: 3
-    };
-
-    // --- NAVIGATION & HOME LOGIC ---
-    function showHome() {
-        document.getElementById('screen-home').style.display = 'flex';
-        document.getElementById('app-container').style.display = 'none';
-        document.querySelector('header').style.display = 'none';
-        
-        // Hide sub-screens just in case
-        document.getElementById('screen-setup').style.display = 'none'; 
-        document.getElementById('screen-stats').style.display = 'none';
-        document.getElementById('screen-game').style.display = 'none';
-    }
-
-    function goToSetup() {
-        document.getElementById('screen-home').style.display = 'none';
-        document.getElementById('app-container').style.display = 'block';
-        document.querySelector('header').style.display = 'block';
-        
-        document.getElementById('screen-setup').style.display = 'block';
-        document.getElementById('header-subtitle').innerText = "Setup";
-        checkForSave();
-    }
-
-    function goToStats() {
-        document.getElementById('screen-home').style.display = 'none';
-        document.getElementById('app-container').style.display = 'block';
-        document.querySelector('header').style.display = 'block';
-        
-        document.getElementById('screen-stats').style.display = 'block';
-        document.getElementById('header-subtitle').innerText = "Statistiche";
-        renderStats();
-    }
-
-    function openInfoModal() { document.getElementById('info-modal').style.display = 'flex'; }
-    function closeInfoModal() { document.getElementById('info-modal').style.display = 'none'; }
-
-    // --- STATISTICS LOGIC ---
-    const STATS_KEY = 'podrida_stats_v1';
-
-    function getStats() {
-        const s = localStorage.getItem(STATS_KEY);
-        return s ? JSON.parse(s) : [];
-    }
-
-    function saveStat(winnerName, winnerScore, dateStr) {
-        const stats = getStats();
-        stats.unshift({ winner: winnerName, score: winnerScore, date: dateStr });
-        // Keep max 50 records
-        if (stats.length > 50) stats.pop();
-        localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-    }
-
-    function clearStats() {
-        if(confirm("Sei sicuro di voler cancellare tutto lo storico delle partite?")) {
-            localStorage.removeItem(STATS_KEY);
-            renderStats();
-        }
-    }
-
-    function renderStats() {
-        const list = document.getElementById('stats-list');
-        const stats = getStats();
-        list.innerHTML = '';
-        
-        if (stats.length === 0) {
-            list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Nessuna partita registrata.</div>';
-            return;
-        }
-
-        stats.forEach(s => {
-            list.innerHTML += `
-            <div class="stat-item">
-                <div class="stat-winner">${s.winner}</div>
-                <div style="text-align:right;">
-                    <div class="stat-score">${s.score} pt</div>
-                    <div class="stat-date">${s.date}</div>
-                </div>
-            </div>`;
-        });
-    }
-
-    // --- SETUP LOGIC ---
-
-    function init() {
-        renderSetupInputs();
-        updateDeckUI();
-        // Start at Home
-        showHome();
-    }
-
-    function updateDeckUI() {
-        const radios = document.getElementsByName('deckSize');
-        let val = 40;
-        for(const r of radios) if(r.checked) val = parseInt(r.value);
-        
-        document.getElementById('opt-40').className = val === 40 ? 'deck-option selected' : 'deck-option';
-        document.getElementById('opt-52').className = val === 52 ? 'deck-option selected' : 'deck-option';
-
-        let suitHtml = '';
-        if (val === 40) {
-            suitHtml = `
-                <div class="suit-40">
-                    <span class="suit-item">Ori 🟡</span> <span class="suit-separator">></span>
-                    <span class="suit-item">Spade ⚔️</span> <span class="suit-separator">></span>
-                    <span class="suit-item">Coppe 🏆</span> <span class="suit-separator">></span>
-                    <span class="suit-item">Bastoni 🪵</span>
-                </div>`;
-        } else {
-            suitHtml = `
-                <div class="suit-52">
-                    <span class="suit-item suit-red">Cuori ♥️</span> <span class="suit-separator">></span>
-                    <span class="suit-item suit-red">Quadri ♦️</span> <span class="suit-separator">></span>
-                    <span class="suit-item suit-black">Fiori ♣️</span> <span class="suit-separator">></span>
-                    <span class="suit-item suit-black">Picche ♠️</span>
-                </div>`;
-        }
-        document.getElementById('suit-display-setup').innerHTML = suitHtml;
-        document.getElementById('suit-display-game').innerHTML = suitHtml; 
-    }
-
-    function adjustPlayerCount(delta) {
-        const el = document.getElementById('setup-count');
-        let val = parseInt(el.innerText) + delta;
-        if (val < 2) val = 2;
-        if (val > 40) val = 40;
-        el.innerText = val;
-        renderSetupInputs();
-    }
-
-    function renderSetupInputs() {
-        const count = parseInt(document.getElementById('setup-count').innerText);
-        const container = document.getElementById('player-inputs');
-        container.innerHTML = '';
-        
-        const existingRadios = document.getElementsByName('initial-dealer');
-        let checkedIdx = 0;
-        for(const r of existingRadios) { if(r.checked) checkedIdx = parseInt(r.value); }
-        if (checkedIdx >= count) checkedIdx = 0;
-
-        for (let i = 0; i < count; i++) {
-            const isChecked = i === checkedIdx ? 'checked' : '';
-            container.innerHTML += `
-            <div class="setup-player-row">
-                <div class="setup-player-input-wrapper">
-                    <input type="text" id="pname-${i}" placeholder="Giocatore ${i+1}" value="Giocatore ${i+1}" style="margin:0;">
-                </div>
-                <label class="setup-dealer-select">
-                    Mazziere
-                    <input type="radio" name="initial-dealer" value="${i}" ${isChecked}>
-                </label>
-            </div>
-            `;
-        }
-    }
-
-    function generateRoundStructure(numPlayers, deckSize) {
-        const maxCards = Math.floor(deckSize / numPlayers);
-        let rounds = [];
-        for (let i = 1; i <= maxCards; i++) rounds.push({ cards: i, blind: false });
-        for (let i = maxCards - 1; i >= 1; i--) rounds.push({ cards: i, blind: false });
-        rounds.push({ cards: 1, blind: true });
-        return rounds;
-    }
-
-    function startGame() {
-        const count = parseInt(document.getElementById('setup-count').innerText);
-        const deckRadios = document.getElementsByName('deckSize');
-        let dSize = 40;
-        for(const r of deckRadios) if(r.checked) dSize = parseInt(r.value);
-        GAME_STATE.deckSize = dSize;
-
-        const dealerRadios = document.getElementsByName('initial-dealer');
-        let initialDealerIdx = 0;
-        for(const radio of dealerRadios) if(radio.checked) initialDealerIdx = parseInt(radio.value);
-
-        const players = [];
-        for (let i = 0; i < count; i++) {
-            const name = document.getElementById(`pname-${i}`).value.trim() || `G${i+1}`;
-            players.push({ name: name, totalScore: 0 });
-        }
-
-        GAME_STATE.players = players;
-        GAME_STATE.rounds = generateRoundStructure(count, dSize);
-        GAME_STATE.history = [];
-        GAME_STATE.currentRoundIdx = 0;
-        GAME_STATE.phase = 'bidding';
-        GAME_STATE.dealerOffset = initialDealerIdx; 
-        GAME_STATE.tempInputs = new Array(count).fill(0);
-
-        saveGame();
-        renderGameUI();
-        updateDeckUIForGame();
-    }
-
-    function updateDeckUIForGame() {
-        let val = GAME_STATE.deckSize;
-        let suitHtml = '';
-        if (val === 40) {
-            suitHtml = `
-                <div class="suit-40">
-                    <span class="suit-item">Ori 🟡</span> <span class="suit-separator">></span>
-                    <span class="suit-item">Spade ⚔️</span> <span class="suit-separator">></span>
-                    <span class="suit-item">Coppe 🏆</span> <span class="suit-separator">></span>
-                    <span class="suit-item">Bastoni 🪵</span>
-                </div>`;
-        } else {
-            suitHtml = `
-                <div class="suit-52">
-                    <span class="suit-item suit-red">Cuori ♥️</span> <span class="suit-separator">></span>
-                    <span class="suit-item suit-red">Quadri ♦️</span> <span class="suit-separator">></span>
-                    <span class="suit-item suit-black">Fiori ♣️</span> <span class="suit-separator">></span>
-                    <span class="suit-item suit-black">Picche ♠️</span>
-                </div>`;
-        }
-        document.getElementById('suit-display-game').innerHTML = suitHtml;
-    }
-
-    function getDealerIndex() {
-        return (GAME_STATE.currentRoundIdx + GAME_STATE.dealerOffset) % GAME_STATE.players.length;
-    }
-
-    function renderGameUI() {
-        document.getElementById('screen-setup').style.display = 'none';
-        document.getElementById('screen-game').style.display = 'block';
-        updateDeckUIForGame();
-        
-        // Hide endgame stuff if we are resuming in middle of game
-        document.getElementById('endgame-controls').style.display = 'none';
-        document.getElementById('winner-section').style.display = 'none';
-        document.getElementById('game-tabs').style.display = 'flex';
-        document.getElementById('tab-play').style.display = 'block';
-
-        if (GAME_STATE.currentRoundIdx >= GAME_STATE.rounds.length) {
-            showFinalResults();
-            return;
-        }
-
-        const round = GAME_STATE.rounds[GAME_STATE.currentRoundIdx];
-        document.getElementById('header-title').innerText = `Round ${GAME_STATE.currentRoundIdx + 1} / ${GAME_STATE.rounds.length}`;
-        let subTxt = `${round.cards} Cart${round.cards > 1 ? 'e' : 'a'}`;
-        if (round.blind) subTxt += " - AL BUIO";
-        document.getElementById('header-subtitle').innerText = subTxt;
-
-        renderInputs();
-        updateScoreboard();
-    }
-
-    function renderInputs() {
-        const container = document.getElementById('game-inputs');
-        const rulesBox = document.getElementById('round-rules');
-        const btn = document.getElementById('action-btn');
-        const round = GAME_STATE.rounds[GAME_STATE.currentRoundIdx];
-        const pCount = GAME_STATE.players.length;
-        const currentDealerIdx = getDealerIndex();
-
-        container.innerHTML = '';
-        document.getElementById('validation-msg').style.display = 'none';
-
-        let order = [];
-        let startIdx = (currentDealerIdx + 1) % pCount;
-        for(let i=0; i<pCount; i++) order.push( (startIdx + i) % pCount );
-
-        if (!GAME_STATE.tempInputs || GAME_STATE.tempInputs.length !== pCount) {
-            GAME_STATE.tempInputs = new Array(pCount).fill(0);
-        }
-
-        if (GAME_STATE.phase === 'bidding') {
-            btn.innerText = "Conferma Chiamate";
-            btn.classList.remove('danger');
-            
-            let ruleText = `<strong>Fase Chiamate:</strong> `;
-            if (round.blind) ruleText += "<span style='color:red'>Non guardare la carta!</span> ";
-            ruleText += `Mazziere: <strong>${GAME_STATE.players[currentDealerIdx].name}</strong> (ultimo).`;
-            rulesBox.innerHTML = ruleText;
-
-            let currentSum = GAME_STATE.tempInputs.reduce((a,b)=>a+b, 0);
-
-            order.forEach((pIdx) => {
-                const isDealer = (pIdx === currentDealerIdx);
-                let dealerRestrictionMsg = "";
-                if (isDealer) {
-                    const forbidden = round.cards - (currentSum - GAME_STATE.tempInputs[pIdx]);
-                    if (forbidden >= 0) {
-                         dealerRestrictionMsg = `<span style="font-size:0.8rem; color:var(--accent); display:block;">Vietato chiamare: <strong>${forbidden}</strong></span>`;
-                    }
-                }
-                container.innerHTML += createInputRow(pIdx, "Chiamata", round.cards, isDealer, dealerRestrictionMsg);
-            });
-
-        } else {
-            btn.innerText = "Calcola Punti -> Prossimo";
-            btn.classList.add('danger'); 
-            rulesBox.innerHTML = `<strong>Fase Giocata:</strong> Chi ha preso? Totale mani deve essere <strong>${round.cards}</strong>.`;
-            order.forEach(pIdx => {
-                const bid = GAME_STATE.history[GAME_STATE.currentRoundIdx] ? GAME_STATE.history[GAME_STATE.currentRoundIdx].bids[pIdx] : 0; 
-                container.innerHTML += createInputRow(pIdx, `Ha chiamato: ${bid} -> Prese`, round.cards, false, "");
-            });
-        }
-    }
-
-    function createInputRow(pIdx, label, maxVal, isDealer, extraHtml) {
-        const pName = GAME_STATE.players[pIdx].name;
-        const dealerBadge = isDealer ? `<span class="dealer-badge">Mazziere</span>` : '';
-        const val = GAME_STATE.tempInputs[pIdx];
-
-        return `
-        <div class="player-row">
-            <div class="player-name">${pName} ${dealerBadge}</div>
-            <div style="text-align:right;">
-                <div style="font-size:0.75rem; color:#666; margin-bottom:4px;">${label}</div>
-                <div class="control-group">
-                    <button class="control-btn" onclick="updateInput(${pIdx}, -1, ${maxVal})">-</button>
-                    <span class="control-val" id="val-${pIdx}">${val}</span>
-                    <button class="control-btn" onclick="updateInput(${pIdx}, 1, ${maxVal})">+</button>
-                </div>
-                ${extraHtml}
-            </div>
-        </div>
-        `;
-    }
-
-    function updateInput(pIdx, delta, maxVal) {
-        let v = GAME_STATE.tempInputs[pIdx] + delta;
-        if (v < 0) v = 0;
-        if (v > maxVal) v = maxVal;
-        GAME_STATE.tempInputs[pIdx] = v;
-        document.getElementById(`val-${pIdx}`).innerText = v;
-        if (GAME_STATE.phase === 'bidding') renderInputs(); 
-    }
-
-    function submitPhase() {
-        const msg = document.getElementById('validation-msg');
-        const round = GAME_STATE.rounds[GAME_STATE.currentRoundIdx];
-        const sum = GAME_STATE.tempInputs.reduce((a,b)=>a+b, 0);
-
-        if (GAME_STATE.phase === 'bidding') {
-            if (sum === round.cards) {
-                msg.innerText = `ERRORE: Somma chiamate (${sum}) = Numero carte (${round.cards}). Il mazziere deve cambiare.`;
-                msg.style.display = 'block';
-                return;
-            }
-            if (!GAME_STATE.history[GAME_STATE.currentRoundIdx]) {
-                GAME_STATE.history[GAME_STATE.currentRoundIdx] = { bids: [], takes: [] };
-            }
-            GAME_STATE.history[GAME_STATE.currentRoundIdx].bids = [...GAME_STATE.tempInputs];
-            GAME_STATE.phase = 'taking';
-            GAME_STATE.tempInputs.fill(0);
-            saveGame();
-            renderGameUI();
-        } else {
-            if (sum !== round.cards) {
-                msg.innerText = `ERRORE: Somma prese (${sum}) deve essere ${round.cards}.`;
-                msg.style.display = 'block';
-                return;
-            }
-            GAME_STATE.history[GAME_STATE.currentRoundIdx].takes = [...GAME_STATE.tempInputs];
-            recalculateScores();
-            GAME_STATE.currentRoundIdx++;
-            GAME_STATE.phase = 'bidding';
-            GAME_STATE.tempInputs.fill(0);
-            saveGame();
-            renderGameUI();
-        }
-    }
-
-    function undoPhase() {
-        if (GAME_STATE.phase === 'taking') {
-            GAME_STATE.phase = 'bidding';
-            GAME_STATE.tempInputs = [...GAME_STATE.history[GAME_STATE.currentRoundIdx].bids];
-            renderGameUI();
-        } else {
-            if (GAME_STATE.currentRoundIdx > 0) {
-                GAME_STATE.currentRoundIdx--;
-                GAME_STATE.phase = 'taking';
-                GAME_STATE.tempInputs = [...GAME_STATE.history[GAME_STATE.currentRoundIdx].takes];
-                renderGameUI();
-            }
-        }
-    }
-
-    function recalculateScores() {
-        GAME_STATE.players.forEach(p => p.totalScore = 0);
-        GAME_STATE.history.forEach((roundData, rIdx) => {
-            if (!roundData || !roundData.bids || !roundData.takes) return;
-            roundData.bids.forEach((bid, pIdx) => {
-                const taken = roundData.takes[pIdx];
-                if (bid === taken) {
-                    GAME_STATE.players[pIdx].totalScore += CONFIG.pointsCorrect + (taken * CONFIG.pointsPerTrick);
-                }
-            });
-        });
-    }
-
-    function updateScoreboard() {
-        const sortedPlayers = [...GAME_STATE.players].map((p, i) => ({...p, originalIdx: i}))
-                                .sort((a,b) => b.totalScore - a.totalScore);
-        const tbody = document.getElementById('scoreboard-body');
-        tbody.innerHTML = '';
-        sortedPlayers.forEach((p, rank) => {
-            tbody.innerHTML += `
-            <tr class="${rank===0 ? 'current-leader' : ''}">
-                <td>${rank+1}</td>
-                <td style="text-align:left;">${p.name}</td>
-                <td style="font-weight:bold; font-size:1.1rem;">${p.totalScore}</td>
-            </tr>`;
-        });
-        renderHistoryList();
-    }
-
-    function renderHistoryList() {
-        const list = document.getElementById('history-list');
-        list.innerHTML = '';
-        for (let r=GAME_STATE.history.length-1; r>=0; r--) {
-            const h = GAME_STATE.history[r];
-            if (!h || !h.takes || h.takes.length === 0) continue; 
-            const roundInfo = GAME_STATE.rounds[r];
-            list.innerHTML += `<div class="card" onclick="openEditModal(${r})" style="cursor:pointer; border:1px solid #eee; padding:10px;">
-                <div style="display:flex; justify-content:space-between;">
-                    <strong>Round ${r+1}</strong> <span>${roundInfo.cards} carte</span>
-                </div>
-                <div style="font-size:0.8rem; color:#555;">Modifica</div>
-            </div>`;
-        }
-    }
-
-    // --- EDITING ---
-    let editRoundIdx = -1;
-    let editTempBids = [];
-    let editTempTakes = [];
-    let editCurrentTab = 'bids';
-
-    function openEditModal(rIdx) {
-        editRoundIdx = rIdx;
-        editTempBids = [...GAME_STATE.history[rIdx].bids];
-        editTempTakes = [...GAME_STATE.history[rIdx].takes];
-        document.getElementById('edit-round-num').innerText = rIdx + 1;
-        document.getElementById('edit-modal').style.display = 'flex';
-        switchEditTab('bids');
-    }
-
-    function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; }
-
-    function switchEditTab(tab) {
-        editCurrentTab = tab;
-        document.getElementById('edit-tab-bids').className = tab === 'bids' ? 'tab active' : 'tab';
-        document.getElementById('edit-tab-takes').className = tab === 'takes' ? 'tab active' : 'tab';
-        renderEditInputs();
-    }
-
-    function renderEditInputs() {
-        const container = document.getElementById('edit-inputs');
-        container.innerHTML = '';
-        const data = editCurrentTab === 'bids' ? editTempBids : editTempTakes;
-        const maxVal = GAME_STATE.rounds[editRoundIdx].cards;
-        data.forEach((val, pIdx) => {
-            container.innerHTML += `
-            <div class="player-row">
-                <span class="player-name">${GAME_STATE.players[pIdx].name}</span>
-                <div class="control-group">
-                    <button class="control-btn" onclick="updateEditInput(${pIdx}, -1)">-</button>
-                    <span class="control-val">${val}</span>
-                    <button class="control-btn" onclick="updateEditInput(${pIdx}, 1, ${maxVal})">+</button>
-                </div>
-            </div>`;
-        });
-    }
-
-    function updateEditInput(pIdx, delta, maxVal) {
-        const arr = editCurrentTab === 'bids' ? editTempBids : editTempTakes;
-        let v = arr[pIdx] + delta;
-        if (v < 0) v = 0;
-        if (maxVal && v > maxVal) v = maxVal;
-        arr[pIdx] = v;
-        renderEditInputs();
-    }
-
-    function saveEdit() {
-        const round = GAME_STATE.rounds[editRoundIdx];
-        const msg = document.getElementById('edit-validation-msg');
-        const sumBids = editTempBids.reduce((a,b)=>a+b,0);
-        if (sumBids === round.cards) {
-            msg.innerText = "Errore: Somma chiamate = Numero carte.";
-            msg.style.display = 'block';
-            return;
-        }
-        const sumTakes = editTempTakes.reduce((a,b)=>a+b,0);
-        if (sumTakes !== round.cards) {
-            msg.innerText = `Errore: Somma prese (${sumTakes}) deve essere ${round.cards}.`;
-            msg.style.display = 'block';
-            return;
-        }
-        GAME_STATE.history[editRoundIdx].bids = [...editTempBids];
-        GAME_STATE.history[editRoundIdx].takes = [...editTempTakes];
-        recalculateScores();
-        updateScoreboard();
-        saveGame();
-        closeEditModal();
-    }
-
-    // --- UTILITIES & PERSISTENCE ---
-
-    function switchTab(t) {
-        document.getElementById('tab-play').style.display = t === 'play' ? 'block' : 'none';
-        document.getElementById('tab-score').style.display = t === 'score' ? 'block' : 'none';
-        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-        event.target.classList.add('active');
-        if (t === 'score') updateScoreboard();
-    }
-
-    function showFinalResults() {
-        document.getElementById('header-subtitle').innerText = "Partita Terminata";
-        
-        // Sort Winner
-        const sortedPlayers = [...GAME_STATE.players].sort((a,b) => b.totalScore - a.totalScore);
-        const winner = sortedPlayers[0];
-
-        // Save Stats (once)
-        if (!GAME_STATE.statsSaved) {
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            saveStat(winner.name, winner.totalScore, dateStr);
-            GAME_STATE.statsSaved = true;
-            saveGame(); // Save the flag so reload doesn't duplicate
-        }
-
-        // Setup Winner Box
-        document.getElementById('winner-section').innerHTML = `
-            <div class="winner-box">
-                <div class="winner-trophy">🏆</div>
-                <div class="winner-name">${winner.name}</div>
-                <div class="winner-score">${winner.totalScore} Punti</div>
-            </div>
-        `;
-        
-        // Switch to score tab and show endgame controls
-        switchTab('score');
-        document.getElementById('game-tabs').style.display = 'none'; // Hide tabs to lock view
-        document.getElementById('winner-section').style.display = 'block';
-        document.getElementById('endgame-controls').style.display = 'block';
-        document.getElementById('history-card').style.display = 'none'; // Hide history editing to clean up view
-    }
-    
-    function saveGame() { localStorage.setItem('podrida_save', JSON.stringify(GAME_STATE)); }
-
-    function checkForSave() {
-        const saved = localStorage.getItem('podrida_save');
-        if (saved) {
-            document.getElementById('resume-btn').style.display = 'inline-block';
-        } else {
-            document.getElementById('resume-btn').style.display = 'none';
-        }
-    }
-
-    window.resumeGame = function() {
-        try {
-            const saved = JSON.parse(localStorage.getItem('podrida_save'));
-            if (saved) {
-                Object.keys(saved).forEach(k => GAME_STATE[k] = saved[k]);
-                renderGameUI();
-            }
-        } catch(e) {
-            console.error("Save corrupted");
-            localStorage.removeItem('podrida_save');
-        }
-    }
-    
-    document.getElementById('resume-btn').onclick = window.resumeGame;
-
-    function resetGame(force) {
-        if(force || confirm("Sei sicuro di voler cancellare la partita corrente e tornare al menu?")) {
-            localStorage.removeItem('podrida_save');
-            location.reload();
-        }
-    }
-
-    // --- DOWNLOAD LOGIC ---
-    async function downloadSummary() {
-        const now = new Date();
-        const dateStr = now.toISOString().split('T')[0]; // yyyy-mm-dd
-        const sortedPlayers = [...GAME_STATE.players].sort((a,b) => b.totalScore - a.totalScore);
-        const winnerName = sortedPlayers[0].name.replace(/[^a-z0-9]/gi, '_');
-        const filename = `${winnerName}-${dateStr}.html`;
-
-        // Text Summary for Sharing
-        let textSummary = `🏆 Podrida - ${dateStr}\nVincitore: ${sortedPlayers[0].name} (${sortedPlayers[0].totalScore} pt)\n\nClassifica:\n`;
-        sortedPlayers.forEach((p, i) => {
-             textSummary += `${i+1}. ${p.name}: ${p.totalScore} pt\n`;
-        });
-
-        // Try Native Share first
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: 'Riepilogo Podrida',
-                    text: textSummary,
-                });
-                return; // If shared successfully, don't download file
-            } catch (err) {
-                console.log('Share failed or canceled', err);
-                // Continue to download if share fails
-            }
-        }
-
-        // Generate clean HTML Table
-        let tableRows = '';
-        
-        // Header
-        let header = '<tr><th>Round</th><th>Carte</th>';
-        GAME_STATE.players.forEach(p => header += `<th>${p.name}</th>`);
-        header += '</tr>';
-
-        // Rows
-        GAME_STATE.history.forEach((h, i) => {
-            if(!h) return;
-            tableRows += `<tr>
-                <td style="text-align:center;">${i+1}</td>
-                <td style="text-align:center;">${GAME_STATE.rounds[i].cards}</td>`;
-            
-            GAME_STATE.players.forEach((p, pIdx) => {
-                const bid = h.bids[pIdx];
-                const take = h.takes[pIdx];
-                let pts = 0;
-                let style = "color:#ccc;";
-                if (bid === take) {
-                    pts = CONFIG.pointsCorrect + (take * CONFIG.pointsPerTrick);
-                    style = "font-weight:bold; color:green;";
-                }
-                tableRows += `<td style="text-align:center; ${style}">${bid}/${take} (+${pts})</td>`;
-            });
-            tableRows += '</tr>';
-        });
-
-        // Total Row
-        let totalRow = `<tr style="background:#eee; font-weight:bold;"><td>TOT</td><td>-</td>`;
-        GAME_STATE.players.forEach(p => totalRow += `<td style="text-align:center; color:blue;">${p.totalScore}</td>`);
-        totalRow += `</tr>`;
-
-        const htmlContent = `
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Riepilogo Podrida - ${dateStr}</title>
-            <style>
-                body { font-family: sans-serif; padding: 20px; }
-                h1 { text-align: center; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th, td { border: 1px solid #ddd; padding: 8px; }
-                th { background-color: #2c3e50; color: white; }
-            </style>
-        </head>
-        <body>
-            <h1>Riepilogo Partita Podrida</h1>
-            <p>Data: ${dateStr}</p>
-            <p>Vincitore: <strong>${sortedPlayers[0].name}</strong> (${sortedPlayers[0].totalScore} pt)</p>
-            <table>
-                ${header}
-                ${tableRows}
-                ${totalRow}
-            </table>
-        </body>
-        </html>`;
-
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
-    init();
-</script>
 </body>
 </html>
