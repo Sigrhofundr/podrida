@@ -1,0 +1,9 @@
+¡Podrida Anotador reemplaza el papel y el lápiz!
+
+Características:
+* Puntaje Automático (10 + 3 por baza)
+* Gestión de Jugadores y Repartidor (2-40 jugadores)
+* Multi-idioma (IT, EN, ES)
+* Compartir resultados nativamente
+
+App de código abierto construida con Capacitor y Vanilla JS.

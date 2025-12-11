@@ -1,0 +1,9 @@
+Podrida Scorekeeper replaces paper and pencil!
+
+Features:
+* Automatic Scoring (10 + 3 per trick)
+* Player & Dealer Management (2-40 players)
+* Multi-language (IT, EN, ES)
+* Native Sharing
+
+Open source app built with Capacitor and Vanilla JS.

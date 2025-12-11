@@ -1,0 +1,9 @@
+Podrida Segnapunti sostituisce carta e penna per le tue partite!
+
+Funzionalità:
+* Punteggi Automatici (10 + 3 per presa)
+* Gestione Giocatori e Mazziere (2-40 giocatori)
+* Multilingua (IT, EN, ES)
+* Condivisione nativa dei risultati
+
+App open source costruita con Capacitor e Vanilla JS.

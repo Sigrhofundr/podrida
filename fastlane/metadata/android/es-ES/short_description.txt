@@ -1,0 +1,1 @@
+Anotador automático para el juego de cartas Podrida.

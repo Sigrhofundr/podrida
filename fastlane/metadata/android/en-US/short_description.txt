@@ -1,0 +1,1 @@
+Automatic scorekeeper for the Podrida card game.
