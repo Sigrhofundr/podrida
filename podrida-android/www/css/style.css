@@ -38,11 +38,11 @@ body {
 }
 
 #home-logo {
-    width: 120px;
+    width: 180px;
     height: auto;
     object-fit: contain;
     margin-bottom: 20px;
-    border-radius: 20px;
+    border-radius: 30px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
