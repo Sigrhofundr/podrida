@@ -104,6 +104,59 @@ const TRANSLATIONS = {
         ranking: "Ranking",
         roundGen: "Round",
         cardsGen: "Cards"
+    },
+    es: {
+        play: "Jugar",
+        stats: "Estadísticas",
+        info: "Info",
+        setup: "Nueva Partida",
+        deck: "Seleccionar Baraja:",
+        players: "Número de Jugadores (2-40)",
+        dealer: "Seleccionar primer repartidor:",
+        start: "Empezar Partida",
+        resume: "Reanudar última partida",
+        round: "Ronda",
+        cards: "Cartas",
+        blind: "A CIEGAS",
+        bidding: "Fase de Apuestas:",
+        taking: "Fase de Juego:",
+        dealerLabel: "Repartidor:",
+        last: "último",
+        forbidden: "Prohibido apostar:",
+        confirmBid: "Confirmar Apuestas",
+        confirmTake: "Calc Puntos -> Siguiente",
+        undo: "Deshacer (Cancelar Fase)",
+        errorSumBid: "ERROR: Suma de apuestas",
+        errorSumTake: "ERROR: Suma de bazas",
+        gameEnd: "Fin de la Partida",
+        winner: "Ganador",
+        share: "📤 Compartir Resultados",
+        newGame: "Nueva Partida",
+        history: "Historial Rondas (Editable)",
+        edit: "Editar",
+        reset: "Reiniciar / Borrar Datos",
+        statsTitle: "Estadísticas de Partidas",
+        statsSub: "Historial de partidas guardado en el dispositivo.",
+        back: "Volver",
+        clear: "Borrar Historial",
+        infoTitle: "Información",
+        version: "Versión 1.0.0",
+        devBy: "App desarrollada para gestionar fácilmente tus puntuaciones.",
+        like: "¿Te gusta la app?",
+        coffee: "Cómprame un café ☕",
+        close: "Cerrar",
+        confirmClear: "¿Seguro que quieres borrar todo el historial?",
+        confirmReset: "¿Seguro que quieres salir de la partida actual?",
+        shareError: "No se puede compartir: ",
+        shareSuccess: "¡Compartido con éxito!",
+        copySuccess: "¡Resultados copiados!",
+        save: "Guardar",
+        cancel: "Cancelar",
+        scorekeeper: "Anotador",
+        appFullTitle: "Podrida Anotador",
+        ranking: "Clasificación",
+        roundGen: "Ronda",
+        cardsGen: "Cartas"
     }
 };
 
@@ -116,7 +169,11 @@ function initLang() {
 }
 
 function toggleLanguage() {
-    currentLang = currentLang === 'it' ? 'en' : 'it';
+    // Cycle: it -> en -> es -> it
+    if (currentLang === 'it') currentLang = 'en';
+    else if (currentLang === 'en') currentLang = 'es';
+    else currentLang = 'it';
+    
     localStorage.setItem('podrida_lang', currentLang);
     updateLangUI();
 }
@@ -128,7 +185,10 @@ function t(key) {
 function updateLangUI() {
     // Update Flag
     const btn = document.getElementById('lang-btn');
-    if(btn) btn.innerText = currentLang === 'it' ? '🇮🇹' : '🇬🇧';
+    let flag = '🇮🇹';
+    if(currentLang === 'en') flag = '🇬🇧';
+    if(currentLang === 'es') flag = '🇪🇸';
+    if(btn) btn.innerText = flag;
     
     // Update Static Elements with data-i18n
     document.querySelectorAll('[data-i18n]').forEach(el => {
