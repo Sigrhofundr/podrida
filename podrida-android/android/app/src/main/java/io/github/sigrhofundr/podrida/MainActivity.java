@@ -1,4 +1,4 @@
-package com.podrida.scores;
+package io.github.sigrhofundr.podrida;
 
 import com.getcapacitor.BridgeActivity;
 
