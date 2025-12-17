@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.podrida.scores"
+    namespace = "io.github.sigrhofundr.podrida"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.podrida.scores"
+        applicationId "io.github.sigrhofundr.podrida"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
