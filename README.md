@@ -4,6 +4,8 @@
 
 Dimentica carta e penna! Con questa app puoi calcolare facilmente i punteggi, gestire mazzieri e tenere traccia della classifica in tempo reale.
 
+📖 **Leggi le Regole del Gioco:** [🇮🇹 Italiano](REGOLAMENTO.md) | [🇬🇧 English](RULES.md) | [🇪🇸 Español](REGLAS.md)
+
 ## 🚀 Funzionalità Principali
 
 *   **Punteggi Automatici**: Calcolo automatico (10 punti per la chiamata indovinata + 3 per ogni presa).
@@ -12,6 +14,7 @@ Dimentica carta e penna! Con questa app puoi calcolare facilmente i punteggi, ge
 *   **Statistiche**: Storico locale delle partite e classifica.
 *   **Condivisione**: Condividi i risultati finali direttamente su WhatsApp, Telegram o altre app.
 *   **Setup Flessibile**: Scegli mazzi da 40 o 52 carte.
+
 
 ## 📥 Installazione
 

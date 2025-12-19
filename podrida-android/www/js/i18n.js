@@ -63,7 +63,8 @@ const TRANSLATIONS = {
         table: "Tabella",
         roundDetails: "Dettagli Round",
         showDetails: "📊 Mostra Dettagli Completi",
-        backToScore: "← Torna al Riepilogo"
+        backToScore: "← Torna al Riepilogo",
+        rules: "Regole del Gioco"
     },
     en: {
         play: "Play",
@@ -129,7 +130,8 @@ const TRANSLATIONS = {
         table: "Table",
         roundDetails: "Round Details",
         showDetails: "📊 Show Full Details",
-        backToScore: "← Back to Summary"
+        backToScore: "← Back to Summary",
+        rules: "Game Rules"
     },
     es: {
         play: "Jugar",
@@ -195,7 +197,8 @@ const TRANSLATIONS = {
         table: "Tabla",
         roundDetails: "Detalles de Rondas",
         showDetails: "📊 Mostrar Detalles Completos",
-        backToScore: "← Volver al Resumen"
+        backToScore: "← Volver al Resumen",
+        rules: "Reglas del Juego"
     }
 };
 
