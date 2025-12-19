@@ -181,12 +181,21 @@ function renderGameUI() {
 
 function renderInputs() {
     const container = document.getElementById('game-inputs');
+    const round = GAME_STATE.rounds[GAME_STATE.currentRoundIdx];
+    
+    // Safety check: if round doesn't exist (game ended), exit early
+    if (!round) return;
+    
     const rulesBox = document.getElementById('round-rules');
     const btn = document.getElementById('action-btn');
-    const round = GAME_STATE.rounds[GAME_STATE.currentRoundIdx];
     const pCount = GAME_STATE.players.length;
-    const currentDealerIdx = getDealerIndex();
-
+    const currentDealerIdx = (GAME_STATE.dealerOffset + GAME_STATE.currentRoundIdx) % pCount;
+    
+    // Calculate order of play manually
+    let order = [];
+    let startIdx = (currentDealerIdx + 1) % pCount;
+    for(let i=0; i<pCount; i++) order.push( (startIdx + i) % pCount );
+    
     container.innerHTML = '';
     document.getElementById('validation-msg').style.display = 'none';
 
@@ -194,9 +203,6 @@ function renderInputs() {
         GAME_STATE.tempInputs = new Array(pCount).fill(0);
     }
 
-    let order = [];
-    let startIdx = (currentDealerIdx + 1) % pCount;
-    for(let i=0; i<pCount; i++) order.push( (startIdx + i) % pCount );
 
     if (GAME_STATE.phase === 'bidding') {
         btn.innerText = t('confirmBid');
@@ -213,6 +219,7 @@ function renderInputs() {
             const isDealer = (pIdx === currentDealerIdx);
             let dealerRestrictionMsg = "";
             if (isDealer) {
+
                 const forbidden = round.cards - (currentSum - GAME_STATE.tempInputs[pIdx]);
                 if (forbidden >= 0) {
                         dealerRestrictionMsg = `<span style="font-size:0.8rem; color:var(--accent); display:block;">${t('forbidden')} <strong>${forbidden}</strong></span>`;
@@ -319,10 +326,13 @@ function undoPhase() {
 function switchTab(t) {
     document.getElementById('tab-play').style.display = t === 'play' ? 'block' : 'none';
     document.getElementById('tab-score').style.display = t === 'score' ? 'block' : 'none';
+    document.getElementById('tab-table').style.display = t === 'table' ? 'block' : 'none';
     document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
     event.target.classList.add('active');
     if (t === 'score') updateScoreboard();
+    if (t === 'table') renderResultsTable();
 }
+
 
 function updateScoreboard() {
     const sortedPlayers = [...GAME_STATE.players].map((p, i) => ({...p, originalIdx: i}))
@@ -503,13 +513,13 @@ function showFinalResults() {
     document.getElementById('game-tabs').style.display = 'none'; 
     document.getElementById('winner-section').style.display = 'block';
     document.getElementById('endgame-controls').style.display = 'block';
+    document.getElementById('back-to-score-btn').style.display = 'block';
     // document.getElementById('history-card').style.display = 'none'; // Element not found, caused error 
     
-    // Update Button Texts
-    const btns = document.querySelectorAll('#endgame-controls button');
-    if(btns[0]) btns[0].innerText = t('share');
-    if(btns[1]) btns[1].innerText = t('newGame');
+    // Apply translations to dynamically shown buttons
+    updateLangUI();
 }
+
 
 function resetGame(force) {
     if(force || confirm(t('confirmReset'))) {

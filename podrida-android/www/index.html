@@ -80,6 +80,7 @@
         <div class="tabs" id="game-tabs">
             <div class="tab active" onclick="switchTab('play')" data-i18n="play">Gioca</div>
             <div class="tab" onclick="switchTab('score')" data-i18n="ranking">Classifica</div>
+            <div class="tab" onclick="switchTab('table')" data-i18n="table">Tabella</div>
         </div>
 
         <!-- TAB PLAY -->
@@ -122,13 +123,30 @@
             </div>
             
             <div id="endgame-controls" style="display:none; margin-bottom: 20px;">
-                <button onclick="downloadSummary()" class="secondary" style="background:#2ecc71;" data-i18n="share">📤 Condividi Risultati</button>
-                <button onclick="resetGame(true)" class="danger" style="margin-top:10px;" data-i18n="newGame">Nuova Partita</button>
+                <button id="show-table-btn" onclick="switchTab('table')" style="background:#3498db; margin-bottom:10px;" data-i18n="showDetails"></button>
+                <button onclick="downloadSummary()" style="background:#2ecc71; margin-bottom:10px;" data-i18n="share"></button>
+                <button onclick="resetGame(true)" class="danger" data-i18n="newGame"></button>
             </div>
+
+
 
             <h3 style="margin-left: 5px; color:#666;" data-i18n="history">Storico Round (Modificabile)</h3>
             <div id="history-list">
                 <!-- History Cards -->
+            </div>
+        </div>
+        
+        <!-- TAB TABLE -->
+        <div id="tab-table" style="display:none;">
+            <div class="card">
+                <h3 data-i18n="roundDetails">Dettagli Round</h3>
+                <div class="table-container">
+                    <table id="results-table" class="results-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button id="back-to-score-btn" onclick="switchTab('score')" class="secondary" style="margin-top:15px; display:none;" data-i18n="backToScore"></button>
             </div>
         </div>
         
@@ -204,7 +222,9 @@
 <script src="js/i18n.js"></script>
 <script src="js/logic.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/table-ui.js"></script>
 <script src="js/app.js"></script>
+
 
 </body>
 </html>

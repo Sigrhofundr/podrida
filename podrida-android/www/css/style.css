@@ -314,3 +314,101 @@ td { padding: 10px 5px; border-bottom: 1px solid #eee; }
     cursor: pointer;
     z-index: 10001; /* Higher than home screen (9999) but lower than modal (20000) */
 }
+
+/* --- RESULTS TABLE --- */
+.table-container {
+    overflow: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.results-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.85rem;
+    background: white;
+}
+
+.results-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--primary);
+    color: white;
+    z-index: 10;
+}
+
+.results-table th,
+.results-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    min-width: 60px;
+}
+
+.results-table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.results-table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.results-table tbody tr:hover {
+    background: #e8f4f8;
+}
+
+.result-correct {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.result-incorrect {
+    color: #999;
+}
+
+/* Sticky first two columns (Round #, Cards) for horizontal scroll */
+.results-table th:nth-child(1),
+.results-table th:nth-child(2),
+.results-table td:nth-child(1),
+.results-table td:nth-child(2) {
+    position: sticky;
+    background: white;
+    z-index: 5;
+}
+
+.results-table th:nth-child(1),
+.results-table td:nth-child(1) {
+    left: 0;
+}
+
+.results-table th:nth-child(2),
+.results-table td:nth-child(2) {
+    left: 50px;
+}
+
+.results-table thead th:nth-child(1),
+.results-table thead th:nth-child(2) {
+    background: var(--primary);
+    z-index: 15;
+}
+
+.results-table tbody tr:nth-child(even) td:nth-child(1),
+.results-table tbody tr:nth-child(even) td:nth-child(2) {
+    background: #f9f9f9;
+}
+
+/* Responsive: reduce font size for many players */
+@media (max-width: 480px) {
+    .results-table {
+        font-size: 0.75rem;
+    }
+    .results-table th,
+    .results-table td {
+        padding: 8px 6px;
+        min-width: 50px;
+    }
+}

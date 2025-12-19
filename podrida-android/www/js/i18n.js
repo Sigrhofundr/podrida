@@ -59,7 +59,11 @@ const TRANSLATIONS = {
         suitCuori: "Cuori ♥️",
         suitQuadri: "Quadri ♦️",
         suitFiori: "Fiori ♣️",
-        suitPicche: "Picche ♠️"
+        suitPicche: "Picche ♠️",
+        table: "Tabella",
+        roundDetails: "Dettagli Round",
+        showDetails: "📊 Mostra Dettagli Completi",
+        backToScore: "← Torna al Riepilogo"
     },
     en: {
         play: "Play",
@@ -121,7 +125,11 @@ const TRANSLATIONS = {
         suitCuori: "Hearts ♥️",
         suitQuadri: "Diamonds ♦️",
         suitFiori: "Clubs ♣️",
-        suitPicche: "Spades ♠️"
+        suitPicche: "Spades ♠️",
+        table: "Table",
+        roundDetails: "Round Details",
+        showDetails: "📊 Show Full Details",
+        backToScore: "← Back to Summary"
     },
     es: {
         play: "Jugar",
@@ -183,7 +191,11 @@ const TRANSLATIONS = {
         suitCuori: "Corazones ♥️",
         suitQuadri: "Diamantes ♦️",
         suitFiori: "Tréboles ♣️",
-        suitPicche: "Picas ♠️"
+        suitPicche: "Picas ♠️",
+        table: "Tabla",
+        roundDetails: "Detalles de Rondas",
+        showDetails: "📊 Mostrar Detalles Completos",
+        backToScore: "← Volver al Resumen"
     }
 };
 
